@@ -1,0 +1,13 @@
+{
+  "stocks": [
+    {"code": "2303", "name": "聯電", "market": "TW"},
+    {"code": "3701", "name": "大眾控", "market": "TW"},
+    {"code": "1504", "name": "東元", "market": "TW"},
+    {"code": "2317", "name": "鴻海", "market": "TW"},
+    {"code": "2371", "name": "大同", "market": "TW"},
+    {"code": "3016", "name": "嘉晶", "market": "TW"},
+    {"code": "GOOGL", "name": "Google", "market": "US"}
+  ],
+  "updated": "2026-04-23",
+  "note": "Edit this file to add/remove stocks. Run update script after editing."
+}

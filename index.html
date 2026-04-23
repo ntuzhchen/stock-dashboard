@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stock Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; padding: 16px; }
+h1 { font-size: 1.4rem; color: #4ecdc4; margin-bottom: 4px; }
+.updated { font-size: 0.75rem; color: #888; margin-bottom: 16px; }
+.stock-card { background: #1a1a2e; border-radius: 16px; padding: 16px; margin-bottom: 16px; border: 1px solid #2d2d44; }
+.stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.stock-name { font-size: 1.1rem; font-weight: 600; color: #fff; }
+.stock-price { font-size: 1.3rem; font-weight: 700; color: #4ecdc4; }
+.signal { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; margin-top: 8px; }
+.signal.buy { background: #1b4332; color: #26de81; }
+.signal.sell { background: #4a1515; color: #fc5c65; }
+.signal.hold { background: #3d3520; color: #ffd93d; }
+.signal.caution { background: #4a3015; color: #f9ca24; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+.indicator { background: #252540; border-radius: 10px; padding: 8px; text-align: center; }
+.indicator-label { font-size: 0.65rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+.indicator-value { font-size: 0.95rem; font-weight: 600; margin-top: 2px; }
+.indicator-value.red { color: #fc5c65; }
+.indicator-value.green { color: #26de81; }
+.indicator-value.yellow { color: #ffd93d; }
+.conclusion { background: #252540; border-radius: 10px; padding: 10px 12px; font-size: 0.8rem; line-height: 1.5; color: #ccc; margin-top: 10px; }
+.chart-section { margin-top: 12px; }
+.chart-placeholder { background: #252540; border-radius: 10px; height: 180px; display: flex; align-items: center; justify-content: center; color: #555; font-size: 0.8rem; overflow: hidden; }
+.chart-placeholder img { width: 100%; height: 100%; object-fit: contain; }
+.ma-row { display: flex; gap: 6px; font-size: 0.75rem; margin-top: 4px; flex-wrap: wrap; }
+.ma-tag { background: #252540; padding: 2px 8px; border-radius: 6px; }
+.ma-tag.up { color: #26de81; }
+.ma-tag.down { color: #fc5c65; }
+.footer { text-align: center; padding: 20px; font-size: 0.7rem; color: #555; }
+</style>
+</head>
+<body>
+<h1>📊 Stock Dashboard</h1>
+<p class="updated">Updated: 2026-04-23 16:30</p>
+
+<div id="stocks"></div>
+
+<div class="footer">
+  Automated Technical Analysis • Data from Yahoo Finance<br>
+  MA + KD + RSI + MACD + Volume
+</div>
+
+<script>
+const stocks = [
+  {
+    code: "2303", name: "聯電", price: 76.20,
+    ma: { ma5: 74.5, ma10: 72.1, ma20: 70.8 },
+    rsi: 77.9, kd: { k: 75.2, d: 73.1 },
+    macd: 3.33, macdSignal: 1.15, macdHist: 2.18,
+    bbPos: 106,
+    signal: "caution",
+    conclusion: "均線多頭排列，但 RSI 達77.9偏高且價格突破布林上軌，KD 黃金交叉後已達高檔，短線建議減碼或觀望，等待回調至 MA10(72.1) 附近再進場。"
+  },
+  {
+    code: "3701", name: "大眾控", price: 71.50,
+    ma: { ma5: 68.2, ma10: 65.5, ma20: 63.0 },
+    rsi: 68.7, kd: { k: 70.5, d: 65.2 },
+    macd: 2.24, macdSignal: 0.87, macdHist: 1.37,
+    bbPos: 112,
+    signal: "buy",
+    conclusion: "均線多頭，MACD 在零軸上方擴張，成交量温和放量，KD 黃金交叉，短線偏多，建議續抱。"
+  },
+  {
+    code: "1504", name: "東元", price: 63.70,
+    ma: { ma5: 63.0, ma10: 62.5, ma20: 62.0 },
+    rsi: 52.7, kd: { k: 55.0, d: 50.0 },
+    macd: -2.32, macdSignal: -3.19, macdHist: 0.87,
+    bbPos: 68,
+    signal: "hold",
+    conclusion: "股價在布林中軌整理，RSI 中性，MACD 仍為空方但柱狀圖收斂，成交量萎縮，短期方向不明，建議觀望。"
+  },
+  {
+    code: "2317", name: "鴻海", price: 211.00,
+    ma: { ma5: 205.0, ma10: 198.0, ma20: 195.0 },
+    rsi: 68.1, kd: { k: 72.0, d: 68.0 },
+    macd: -0.85, macdSignal: -3.12, macdHist: 2.27,
+    bbPos: 95,
+    signal: "caution",
+    conclusion: "均線仍多頭，但 MACD 在零軸附近糾結，成交量下滑，指標顯示動能放緩，短線中性偏觀望。"
+  },
+  {
+    code: "2371", name: "大同", price: 31.50,
+    ma: { ma5: 31.8, ma10: 32.0, ma20: 32.5 },
+    rsi: 52.1, kd: { k: 50.0, d: 48.0 },
+    macd: -0.25, macdSignal: -0.41, macdHist: 0.16,
+    bbPos: 44,
+    signal: "hold",
+    conclusion: "RSI 52 中性，MACD 接近死亡/黃金交叉臨界點，股價在布林中軌，方向不明，建議觀望。"
+  },
+  {
+    code: "3016", name: "嘉晶", price: 72.10,
+    ma: { ma5: 70.11, ma10: 66.19, ma20: 62.75 },
+    rsi: 79.5, kd: { k: 83.4, d: 80.7 },
+    macd: 3.29, macdSignal: 1.21, macdHist: 2.08,
+    bbPos: 94,
+    signal: "sell",
+    conclusion: "⚠️ MA5/10/20 多頭排列且 MACD 多方，但 RSI 79.5 + KD K=83/D=80.7 高檔死亡交叉，KD 顯示明顯超買，短線強烈建議分批獲利了結，回調風險極高。"
+  },
+  {
+    code: "GOOGL", name: "Google", price: 339.32,
+    ma: { ma5: 337.35, ma10: 325.0, ma20: 311.85 },
+    rsi: 80.5, kd: { k: 88.8, d: 88.8 },
+    macd: 15.0, macdSignal: 10.0, macdHist: 5.0,
+    bbPos: 105,
+    signal: "caution",
+    conclusion: "均線多頭，MACD 持續擴張，但 RSI 80.5 + KD 88.8 均為高檔，短線超買明顯，建議持有但不追價。"
+  }
+];
+
+const signalLabel = { buy: "🟢 短線偏多", sell: "🔴 短線減碼", caution: "🟡 謹慎持有", hold: "⚪ 觀望" };
+const signalClass = { buy: "buy", sell: "sell", caution: "caution", hold: "hold" };
+
+stocks.forEach(s => {
+  const maShort = s.ma.ma5 > s.price ? 'down' : 'up';
+  const maMid = s.ma.ma10 > s.price ? 'down' : 'up';
+  const maLong = s.ma.ma20 > s.price ? 'down' : 'up';
+  
+  document.getElementById('stocks').innerHTML += `
+  <div class="stock-card">
+    <div class="stock-header">
+      <div>
+        <div class="stock-name">${s.name} (${s.code})</div>
+        <div class="ma-row">
+          <span class="ma-tag ${maShort}">MA5:${s.ma.ma5}</span>
+          <span class="ma-tag ${maMid}">MA10:${s.ma.ma10}</span>
+          <span class="ma-tag ${maLong}">MA20:${s.ma.ma20}</span>
+        </div>
+      </div>
+      <div class="stock-price">$${s.price}</div>
+    </div>
+    <div class="grid">
+      <div class="indicator">
+        <div class="indicator-label">RSI(14)</div>
+        <div class="indicator-value ${s.rsi > 70 ? 'red' : s.rsi < 40 ? 'green' : 'yellow'}">${s.rsi}</div>
+      </div>
+      <div class="indicator">
+        <div class="indicator-label">KD K</div>
+        <div class="indicator-value ${s.kd.k > 80 ? 'red' : s.kd.k < 20 ? 'green' : 'yellow'}">${s.kd.k}</div>
+      </div>
+      <div class="indicator">
+        <div class="indicator-label">KD D</div>
+        <div class="indicator-value ${s.kd.d > 80 ? 'red' : s.kd.d < 20 ? 'green' : 'yellow'}">${s.kd.d}</div>
+      </div>
+      <div class="indicator">
+        <div class="indicator-label">MACD</div>
+        <div class="indicator-value ${s.macd > 0 ? 'green' : 'red'}">${s.macd > 0 ? '+' : ''}${s.macd}</div>
+      </div>
+      <div class="indicator">
+        <div class="indicator-label">Signal</div>
+        <div class="indicator-value ${s.macdSignal > 0 ? 'green' : 'red'}">${s.macdSignal > 0 ? '+' : ''}${s.macdSignal}</div>
+      </div>
+      <div class="indicator">
+        <div class="indicator-label">BB位置</div>
+        <div class="indicator-value ${s.bbPos > 80 ? 'red' : s.bbPos < 30 ? 'green' : 'yellow'}">${s.bbPos}%</div>
+      </div>
+    </div>
+    <span class="signal ${signalClass[s.signal]}">${signalLabel[s.signal]}</span>
+    <div class="conclusion">📝 ${s.conclusion}</div>
+  </div>`;
+});
+</script>
+</body>
+</html>
