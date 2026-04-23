@@ -232,6 +232,7 @@ stocks.forEach(function(s) {
     '</div>' +
     '<span class="signal ' + signalClass[s.signal] + '">' + signalLabel[s.signal] + '</span>' +
     '<div class="conclusion">📝 ' + s.conclusion + '</div>' +
+    '<div class="chart-wrap"><img src="charts/' + s.code + '_' + s.name + '.png" style="width:100%;border-radius:8px;display:block" alt="chart"></div>' +
   '</div>';
 });
 
