@@ -232,18 +232,11 @@ stocks.forEach(function(s) {
     '</div>' +
     '<span class="signal ' + signalClass[s.signal] + '">' + signalLabel[s.signal] + '</span>' +
     '<div class="conclusion">📝 ' + s.conclusion + '</div>' +
-    '<div class="chart-wrap">' +
-      '<canvas id="chart-price-' + s.code + '" style="margin-bottom:6px"></canvas>' +
-      '<canvas id="chart-vol-' + s.code + '" style="margin-bottom:6px"></canvas>' +
-      '<canvas id="chart-rsi-' + s.code + '" style="margin-bottom:6px"></canvas>' +
-      '<canvas id="chart-macd-' + s.code + '" style="margin-bottom:6px"></canvas>' +
-      '<canvas id="chart-kd-' + s.code + '"></canvas>' +
-    '</div>' +
   '</div>';
 });
 
-// Draw all charts
-stocks.forEach(function(s) { drawChart(s); });
+// Charts removed - using PNG images instead
+// stocks.forEach(function(s) { drawChart(s); });
 </script>
 </body>
 </html>
