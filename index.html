@@ -67,7 +67,7 @@ stocks.forEach(function(s){
       '<div class="indicator"><div class="indicator-label">BB位置</div><div class="indicator-value '+(s.bb_pos>80?'red':s.bb_pos<30?'green':'yellow')+'">'+s.bb_pos+'%</div></div>'+
     '</div>'+
     '<span class="signal '+signalClass[s.signal]+'">'+signalLabel[s.signal]+'</span>'+
-    '<div class="conclusion">📝 '+s.conclusion+'</div>'+
+    '<div class="conclusion">📝 '+(s.ai_conclusion||s.conclusion||'')+'</div>'+
     '<div class="chart-wrap"><img class="chart-img" src="charts/'+s.code+'_'+s.name+'.png" alt="'+s.name+' chart" loading="lazy"></div>'+
   '</div>';
 });
