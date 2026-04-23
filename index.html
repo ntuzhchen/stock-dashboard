@@ -25,7 +25,10 @@ h1 { font-size: 1.1rem; color: #4ecdc4; margin-bottom: 2px; padding: 0 14px; }
 .indicator-value.red { color: #fc5c65; }
 .indicator-value.green { color: #26de81; }
 .indicator-value.yellow { color: #ffd93d; }
-.conclusion { background: #252540; border-radius: 8px; padding: 8px 10px; font-size: 0.68rem; line-height: 1.45; color: #ccc; margin-top: 8px; word-wrap: break-word; overflow-wrap: break-word; }
+.conclusion { background: #252540; border-radius: 8px; padding: 10px 12px; font-size: 0.68rem; line-height: 1.5; color: #ccc; margin-top: 8px; word-wrap: break-word; overflow-wrap: break-word; }
+.conclusion b { color: #4ecdc4; font-size: 0.75rem; }
+.ai-reason { display: block; color: #aaa; font-size: 0.62rem; margin-top: 4px; }
+.ai-dir { display: block; color: #888; font-size: 0.6rem; margin-top: 2px; }
 .chart-wrap { margin-top: 10px; }
 .chart-img { width: 100%; border-radius: 8px; display: block; }
 .ma-row { display: flex; gap: 4px; font-size: 0.62rem; margin-top: 3px; flex-wrap: wrap; }
@@ -67,7 +70,9 @@ stocks.forEach(function(s){
       '<div class="indicator"><div class="indicator-label">BB位置</div><div class="indicator-value '+(s.bb_pos>80?'red':s.bb_pos<30?'green':'yellow')+'">'+s.bb_pos+'%</div></div>'+
     '</div>'+
     '<span class="signal '+signalClass[s.signal]+'">'+signalLabel[s.signal]+'</span>'+
-    '<div class="conclusion">📝 '+(s.ai_conclusion||s.conclusion||'')+'</div>'+
+    '<div class="conclusion">📝 <b>'+(s.ai_conclusion||s.conclusion||'—')+'</b><br>'+
+    '<span class="ai-reason">⚙️ '+((s.ai_reason||'')||'').replace(/^⚙️ /,'') + '</span><br>'+
+    '<span class="ai-dir">🔭 '+(s.ai_direction||'持續觀察')+'</span></div>'+
     '<div class="chart-wrap"><img class="chart-img" src="charts/'+s.code+'_'+s.name+'.png" alt="'+s.name+' chart" loading="lazy"></div>'+
   '</div>';
 });
