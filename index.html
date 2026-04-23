@@ -6,26 +6,26 @@
 <title>Stock Dashboard</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; padding: 12px 10px; max-width: 100vw; overflow-x: hidden; }
-h1 { font-size: 1.1rem; color: #4ecdc4; margin-bottom: 2px; }
-.updated { font-size: 0.65rem; color: #555; margin-bottom: 12px; }
-.stock-card { background: #1a1a2e; border-radius: 12px; padding: 12px 10px; margin-bottom: 12px; border: 1px solid #2d2d44; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; padding: 12px 0; }
+h1 { font-size: 1.1rem; color: #4ecdc4; margin-bottom: 2px; padding: 0 14px; }
+.updated { font-size: 0.65rem; color: #555; margin-bottom: 12px; padding: 0 14px; }
+.stock-card { background: #1a1a2e; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; border: 1px solid #2d2d44; width: 100%; }
 .stock-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
 .stock-name { font-size: 0.95rem; font-weight: 600; color: #fff; line-height: 1.3; }
-.stock-price { font-size: 1.1rem; font-weight: 700; color: #4ecdc4; }
-.signal { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 600; margin-top: 6px; margin-right: 6px; white-space: nowrap; }
+.stock-price { font-size: 1.1rem; font-weight: 700; color: #4ecdc4; flex-shrink: 0; margin-left: 8px; }
+.signal { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.6rem; font-weight: 600; margin-top: 6px; margin-right: 6px; }
 .signal.buy { background: #1b4332; color: #26de81; }
 .signal.sell { background: #4a1515; color: #fc5c65; }
 .signal.hold { background: #3d3520; color: #ffd93d; }
 .signal.caution { background: #4a3015; color: #f9ca24; }
 .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 8px 0; }
-.indicator { background: #252540; border-radius: 8px; padding: 6px 3px; text-align: center; }
+.indicator { background: #252540; border-radius: 8px; padding: 6px 3px; text-align: center; overflow: hidden; }
 .indicator-label { font-size: 0.5rem; color: #888; text-transform: uppercase; letter-spacing: 0.3px; }
-.indicator-value { font-size: 0.85rem; font-weight: 600; margin-top: 2px; }
+.indicator-value { font-size: 0.8rem; font-weight: 600; margin-top: 2px; white-space: nowrap; }
 .indicator-value.red { color: #fc5c65; }
 .indicator-value.green { color: #26de81; }
 .indicator-value.yellow { color: #ffd93d; }
-.conclusion { background: #252540; border-radius: 8px; padding: 8px 10px; font-size: 0.68rem; line-height: 1.45; color: #ccc; margin-top: 8px; }
+.conclusion { background: #252540; border-radius: 8px; padding: 8px 10px; font-size: 0.68rem; line-height: 1.45; color: #ccc; margin-top: 8px; word-wrap: break-word; overflow-wrap: break-word; }
 .chart-wrap { margin-top: 10px; }
 .chart-img { width: 100%; border-radius: 8px; display: block; }
 .ma-row { display: flex; gap: 4px; font-size: 0.62rem; margin-top: 3px; flex-wrap: wrap; }
@@ -75,11 +75,11 @@ stocks.forEach(function(s){
       '<div class="stock-price">$'+s.price.toFixed(2)+'</div>'+
     '</div>'+
     '<div class="grid">'+
-      '<div class="indicator"><div class="indicator-label">RSI(14)</div><div class="indicator-value '+(s.rsi>70?'red':s.rsi<40?'green':'yellow')+'">'+s.rsi+'</div></div>'+
-      '<div class="indicator"><div class="indicator-label">KD K</div><div class="indicator-value '+(s.kd_k>80?'red':s.kd_k<20?'green':'yellow')+'">'+s.kd_k+'</div></div>'+
-      '<div class="indicator"><div class="indicator-label">KD D</div><div class="indicator-value '+(s.kd_d>80?'red':s.kd_d<20?'green':'yellow')+'">'+s.kd_d+'</div></div>'+
-      '<div class="indicator"><div class="indicator-label">MACD</div><div class="indicator-value '+(s.macd>0?'green':'red')+'">'+(s.macd>0?'+':'')+s.macd+'</div></div>'+
-      '<div class="indicator"><div class="indicator-label">Signal</div><div class="indicator-value '+(s.macd_signal>0?'green':'red')+'">'+(s.macd_signal>0?'+':'')+s.macd_signal+'</div></div>'+
+      '<div class="indicator"><div class="indicator-label">RSI(14)</div><div class="indicator-value '+(s.rsi>70?'red':s.rsi<40?'green':'yellow')+'">'+s.rsi.toFixed(1)+'</div></div>'+
+      '<div class="indicator"><div class="indicator-label">KD K</div><div class="indicator-value '+(s.kd_k>80?'red':s.kd_k<20?'green':'yellow')+'">'+s.kd_k.toFixed(1)+'</div></div>'+
+      '<div class="indicator"><div class="indicator-label">KD D</div><div class="indicator-value '+(s.kd_d>80?'red':s.kd_d<20?'green':'yellow')+'">'+s.kd_d.toFixed(1)+'</div></div>'+
+      '<div class="indicator"><div class="indicator-label">MACD</div><div class="indicator-value '+(s.macd>0?'green':'red')+'">'+(s.macd>0?'+':'')+s.macd.toFixed(2)+'</div></div>'+
+      '<div class="indicator"><div class="indicator-label">Signal</div><div class="indicator-value '+(s.macd_signal>0?'green':'red')+'">'+(s.macd_signal>0?'+':'')+s.macd_signal.toFixed(2)+'</div></div>'+
       '<div class="indicator"><div class="indicator-label">BB位置</div><div class="indicator-value '+(s.bb_pos>80?'red':s.bb_pos<30?'green':'yellow')+'">'+s.bb_pos+'%</div></div>'+
     '</div>'+
     '<span class="signal '+signalClass[s.signal]+'">'+signalLabel[s.signal]+'</span>'+
